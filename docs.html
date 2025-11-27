@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anegan - Documentation</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* ---- Layout ---- */
+        body {
+            /* display: flex; */
+            display: fixed;
+            min-height: 100vh;
+            font-family: var(--font-body);
+            background: var(--bg-main);
+            color: var(--text-primary);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: #071313;
+            padding: 20px;
+            position: fixed;
+            height: 100%;
+            overflow-y: auto;
+            top: 80px;       /* push below navbar (adjust to your navbar height) */
+            z-index: 5;      /* higher than main content */
+        }
+
+        .sidebar h2 {
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--accent);
+        }
+
+        .sidebar input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: none;
+            font-size: 1rem;
+            position: sticky;
+        }
+
+        .sidebar a {
+            display: block;
+            color: var(--text-primary);
+            padding: 6px 0;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .sidebar a:hover {
+            color: var(--accent);
+        }
+
+        /* Main content */
+        .docs-content {
+            margin-left: 270px; /* sidebar width + margin */
+            padding: 100px 40px 40px 40px;
+            /* flex: 1; */
+        }
+
+        .docs-content h1 {
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .docs-content h2 {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        .docs-content ul,
+        .docs-content ol {
+            margin-left: 20px;          /* indent from main content */
+            margin-bottom: 10px;        /* spacing after list */
+            padding-left: 15px;         /* bullet/number alignment */
+        }
+
+        .docs-content li {
+            margin-bottom: 6px;         /* space between items */
+            /* line-height: 1.6;           improve readability */
+        }
+
+        /* Inline code */
+        .docs-content code {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.95em;
+        }
+
+        /* Code blocks (if ever used) */
+        .docs-content pre {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-bottom: 15px;
+            font-family: monospace;
+            font-size: 0.95em;
+}
+
+        .command {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .command-name {
+            font-weight: bold;
+        }
+
+        .command-description {
+            margin-top: 5px;
+            margin-left: 10px;
+        }
+
+        .command-usage {
+            font-family: monospace;
+            background: rgba(255,255,255,0.1);
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        .category-title {
+            cursor: pointer;
+        }
+
+        /* Command examples styling */
+        .command-examples {
+            margin-top: 10px;
+            margin-left: 10px; /* indent from command description */
+            padding-left: 15px;
+            border-left: 2px solid rgba(255,255,255,0.2); /* subtle visual separation */
+        }
+
+        .command-examples ul {
+            list-style: disc inside; /* proper bullet indentation */
+            margin: 4px 0;
+            padding-left: 20px;
+            margin-left: 5px;
+        }
+
+        .command-examples li {
+            margin-bottom: 10px; /* space between examples */
+            line-height: 1.5;    /* increase readability */
+        }
+
+        .command-examples code {
+            background: rgba(255,255,255,0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        /* Command examples styling */
+        .command-details {
+            margin-top: 10px;
+            margin-left: 10px; /* indent from command description */
+            padding-left: 15px;
+            border-left: 2px solid rgba(255,255,255,0.2); /* subtle visual separation */
+        }
+
+        .command-details ul {
+            list-style: disc inside; /* proper bullet indentation */
+            margin: 4px 0;
+            padding-left: 20px;
+            margin-left: 5px;
+        }
+
+        .command-details li {
+            margin-bottom: 10px; /* space between examples */
+            line-height: 1.5;    /* increase readability */
+        }
+
+        /* Command Arguments styling */
+        .command-arguments {
+            margin-top: 10px;
+            margin-left: 10px;
+            padding-left: 15px;
+            border-left: 2px solid rgba(255,255,255,0.2);
+        }
+        .command-arguments ul {
+            list-style: disc inside;
+            margin: 4px 0;
+            padding-left: 20px;
+            margin-left: 5px;
+        }
+        .command-arguments li {
+            margin-bottom: 5px;
+            line-height: 1.4;
+        }
+
+
+        .example-title {
+            font-style: italic;
+            margin-right: 5px; /* spacing after title */
+            display: inline;   /* allow it to sit on same line as bullet */
+        }
+
+        .example-content {
+            margin-left: 40px; /* indent content under the sub-title */
+            line-height: 1.5;
+        }
+
+        .category-overview {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .category-overview h3 {
+            margin-top: 12px;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .category-overview ol,
+        .category-overview ul {
+            margin-left: 20px;
+            margin-bottom: 10px;
+        }
+
+        .category-overview li {
+            margin-bottom: 6px;
+        }
+
+        .category-overview code {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.95em;
+        }
+
+        /* Accordion effect */
+        .accordion-content {
+            display: none;
+            margin-left: 10px;
+            margin-top: 5px;
+        }
+
+        .accordion-content.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav>
+        <div class="container">
+            <img src="images/Logo.jpg" alt="Anegan Logo" class="logo">
+            <div class="nav-right">
+                <a href="index.html">Home</a>
+                <a href="index.html#features">Features</a>
+                <a href="docs.html">Docs</a>
+                <a href="help.html">Help</a>
+                <a href="terms.html">Terms</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="docs-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2>Search Commands</h2>
+            <input type="text" id="search" placeholder="Search commands...">
+            <div id="search-message" style="color: #aaa; font-size: 0.9rem; margin-top: 5px;"></div>
+            <h2>Prefix Categories</h2>
+            <a href="#auction">Auction</a>
+            <a href="#autoreactions">AutoReactions</a>
+            <a href="#moderation">Moderation</a>
+
+            <h2>Slash Categories</h2>
+            <a href="#media_transfer">Media Transfer</a>
+            <a href="#analytics">Analytics</a>
+            <a href="#thread_manager">Thread Manager</a>
+            <a href="#reminders">Reminders</a>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="docs-content">
+            <h1>Anegan Documentation</h1>
+            <p style="margin-left: 10px;">
+                Welcome to Anegan's documentation! Here you'll find detailed information about all commands, features, and server settings to help you manage your Discord server efficiently.
+            </p>
+
+            <h2>Getting Started</h2>
+            <ul>
+                <li>Add Anegan to your server using the <strong>"Invite Anegan"</strong> button on the homepage.</li>
+                <li>Ensure you have the necessary administrator or moderator permissions to configure the bot.</li>
+                <li>Use either slash commands (<code>/command</code>) or prefix commands (<code>!command</code>) to interact with the bot.</li>
+            </ul>
+
+            <h2>Features Overview</h2>
+            <p style="margin-left: 10px;">
+                Anegan comes packed with powerful features to enhance your server:
+            </p>
+            <ul>
+                <li><strong>Auctions:</strong> Run server-wide auctions with real-time updates and balance management.</li>
+                <li><strong>AutoReactions:</strong> Automatically add emoji reactions to media posts to drive engagement.</li>
+                <li><strong>Moderation:</strong> Manage users easily with kick, ban, mute, whitelist, and link protection tools.</li>
+                <li><strong>Reminders:</strong> Schedule custom reminders for events, birthdays, and tasks.</li>
+                <li><strong>Analytics:</strong> Track server activity, command usage, and engagement statistics.</li>
+            </ul>
+
+            <h2>Command Structure</h2>
+            <p style="margin-left: 10px;">
+                Anegan supports both **prefix commands** (<code>!command</code>) and **slash commands** (<code>/command</code>).  
+                Commands may have optional parameters or subcommands. Use the sidebar navigation to explore commands by category and view detailed usage examples.
+            </p>
+
+            <h2>Troubleshooting</h2>
+            <ul>
+                <li>If a command does not work, verify that the bot has the correct permissions and role hierarchy in your server settings.</li>
+                <li>Check your command syntax carefully; prefix and slash commands differ slightly.</li>
+                <li>For persistent issues or to report bugs, join the <a href="https://discord.gg/ssrtbun3c8" class="support-btn">Anegan Support Server</a>.</li>
+            </ul>
+
+            <h1><br>Detailed Command Documentation</h1>
+
+            <!-- PREFIX COMMANDS -->
+
+            <h2 id="auction" class="category-title">Auction</h2>
+
+            <div class="category-overview">
+                <p>
+                    The Auction System allows administrators to host auctions and registered users to place bids.
+                </p>
+                <h3>Main Flow:</h3>
+                <ol>
+                    <li>Users must register using the <code>!Register</code> command with their initial balance.</li>
+                    <li>Administrators can start an auction using the <code>!StartAuction</code> command.
+                        <ul>
+                            <li>Only registered users can participate in the auction.</li>
+                        </ul>
+                    </li>
+                    <li>Registered users can place bids by just sending in their bid values as numbers.</li>
+                    <li>Administrators can end the auction at any time using the <code>!EndAuction</code> command.</li>
+                </ol>
+            </div>
+        
+            <div class="accordion-content">
+                <div class="command">
+                    <div class="command-name">Balance</div>
+                    <div class="command-description">
+                        This command retrieves and displays the balance of the user who invokes it.
+                    </div>
+                    <div class="command-usage">!Balance</div>
+                    <div class="command-examples">
+                        <strong>Examples:</strong>
+                        <ul>
+                            <li>
+                                <span class="example-title">Registered user checks balance:</span>
+                                <div class="example-content">
+                                    Command: <code>!Balance</code><br>
+                                    Response: "JohnDoe, your balance is 500."
+                                </div>
+                            </li>
+                            <li>
+                                <span class="example-title">Unregistered user attempts to check balance:</span>
+                                <div class="example-content">
+                                    Command: <code>!Balance</code><br>
+                                    Response: "You are not registered. Use <code>!Register &lt;balance&gt; </code> to register."
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="command">
+                    <div class="command-name">EndAuction</div>
+                    <div class="command-description">
+                        This command concludes the current auction and announces the winner if there are valid bids. 
+                        If no bids were placed during the auction, it will notify the users that the auction ended without a winner.
+                    </div>
+                    <div class="command-usage">!EndAuction</div>
+                    <div class="command-details">
+                        <strong>Permissions:</strong>
+                        <ul>
+                            <li>Only administrators can use this command.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="command">
+                    <div class="command-name">ListItems</div>
+                    <div class="command-description">List all your items.</div>
+                    <div class="command-usage">!ListItems</div>
+                </div>
+
+                <div class="command">
+                    <div class="command-name">ListParticipants</div>
+                    <div class="command-description">List all registered participants in the server.</div>
+                    <div class="command-usage">!ListParticipants</div>
+                    <div class="command-details">
+                        <strong>Permissions:</strong>
+                        <ul>
+                            <li>Only administrators can use this command.</li>
+                        </ul>
+                    </div>
+                    <div class="command-examples">
+                        <strong>Examples:</strong>
+                        <ul>
+                            <li>
+                                <span class="example-title">Listing participants when some are registered:</span>
+                                <div class="example-content">
+                                    Command: <code>!ListParticipants</code><br>
+                                    Response:<br>
+                                    <pre>
+Registered Participants and their balances:
+@User1: 500
+@User2: 300
+                                    </pre>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="example-title">Listing participants when no one is registered:</span>
+                                <div class="example-content">
+                                    Command: <code>!ListParticipants</code><br>
+                                    Response: "No registered participants found in this server."
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="command">
+                    <div class="command-name">Register</div>
+                    <div class="command-description">
+                        This command allows users to register themselves in the auction system with an initial balance.
+                        Once registered, users can participate in auctions and bid on items.
+                    </div>
+                    <div class="command-usage">!Register &lt;balance&gt;</div>
+                        <div class="command-arguments">
+                            <strong>Arguments:</strong>
+                            <ul>
+                                <li><code>balance</code> — Initial user balance in cash/coins to bid.</li>
+                            </ul>
+                        </div>
+                    <div class="command-examples">
+                        <strong>Examples:</strong>
+                        <ul>
+                            <li>
+                                <span class="example-title">Registering with an initial balance:</span>
+                                <div class="example-content">
+                                    Command: <code>!Register 10000</code><br>
+                                    Response: "JohnDoe registered with a balance of 10000."
+                                </div>
+                            </li>
+                            <li>
+                                <span class="example-title">Attempting to register when already registered:</span>
+                                <div class="example-content">
+                                    Command: <code>!Register 5000</code><br>
+                                    Response: "You are already registered!"
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="command">
+                    <div class="command-name">ResetAuction</div>
+                    <div class="command-description">
+                        This command allows administrators to reset the auction by clearing all registered users, resetting balances, and removing all auction items for the server. 
+                        After the command is issued, the bot will prompt the administrator to confirm by typing "yes" within 30 seconds. 
+                        If confirmed, the bot will perform the reset and display a confirmation message. If no confirmation is received within 30 seconds, the reset will be canceled. 
+                        This safeguard ensures that the reset is intentional.
+                    </div>
+                    <div class="command-usage">!ResetAuction</div>
+
+                    <div class="command-examples">
+                        <strong>Examples:</strong>
+                        <ul>
+                            <li>
+                                <span class="example-title">Admin resetting the auction for the server:</span>
+                                <div class="example-content">
+                                    Command: <code>!ResetAuction</code><br>
+                                    Response: "All auction details have been reset for this server."
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="command">
+                    <div class="command-name">StartAuction</div>
+                    
+                    <div class="command-description">
+                        Initiates an auction for a specified item with a given starting bid.
+                    </div>
+                    
+                    <div class="command-usage">!StartAuction &lt;item_name&gt;, &lt;starting_bid&gt;</div>
+                    <div class="command-arguments">
+                        <strong>Arguments:</strong>
+                        <ul>
+                            <li><code>item_name</code> — Name of the item to be auctioned.</li>
+                            <li><code>starting_bid</code> — Minimum bid amount to start the auction (positive integer).</li>
+                        </ul>
+                    </div>
+                    <div class="command-details">
+                        <strong>Permissions:</strong>
+                        <ul>
+                            <li>Only administrators can use this command.</li>
+                        </ul>
+                    </div>
+                    <div class="command-examples">
+                        <strong>Examples:</strong>
+                        <ul>
+                            <li>
+                                <span class="example-title">Start an auction for "Blue Pen" with a starting bid of 100:</span>
+                                <div class="example-content">
+                                    Command: <code>!StartAuction Blue Pen, 100</code><br>
+                                    Behavior:<br>
+                                    &nbsp;&nbsp;&nbsp;- Starts an auction for the item "Blue Pen"<br>
+                                    &nbsp;&nbsp;&nbsp;- Sets the minimum bid to 100<br>
+                                    &nbsp;&nbsp;&nbsp;- Announces the auction in the channel
+                                </div>
+                            </li>
+                            <li>
+                                <span class="example-title">Invalid starting bid:</span>
+                                <div class="example-content">
+                                    Command: <code>!StartAuction Golden Sword, fifty</code><br>
+                                    Response: "Starting bid must be a positive integer."
+                                </div>
+                            </li>
+                            <li>
+                                <span class="example-title">Missing comma in input:</span>
+                                <div class="example-content">
+                                    Command: <code>!StartAuction Blue Pen 100</code><br>
+                                    Response: "Invalid input format. Use: !StartAuction &lt;item_name&gt;, &lt;starting_bid&gt;"
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="command">
+                    <div class="command-name">Unregister</div>
+                    <div class="command-description">Unregister a user from the auction.</div>
+                    <div class="command-usage">!Unregister &lt;user&gt;</div>
+                    <div class="command-arguments">
+                        <strong>Arguments:</strong>
+                        <ul>
+                            <li><code>user</code> — Mention the user.</li>
+                        </ul>
+                    </div>
+                    <div class="command-details">
+                        <strong>Permissions:</strong>
+                        <ul>
+                            <li>Only administrators can use this command.</li>
+                        </ul>
+                    </div>
+                    <div class="command-examples">
+                        <strong>Examples:</strong>
+                        <ul>
+                            <li>
+                                <span class="example-title">Admin unregistering a user:</span>
+                                <div class="example-content">
+                                    Command: <code>!Unregister @JohnDoe</code><br>
+                                    Response: "JohnDoe has been unregistered from the auction."
+                                </div>
+                            </li>
+                            <li>
+                                <span class="example-title">Attempting to unregister a user who is not registered:</span>
+                                <div class="example-content">
+                                    Command: <code>!Unregister @JaneDoe</code><br>
+                                    Response: "JaneDoe is not registered."
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="command">
+                    <div class="command-name">UpdateBalance</div>
+                    <div class="command-description">Refill a participant's balance.</div>
+                    <div class="command-usage">!UpdateBalance &lt;user&gt;, &lt;new_balance&gt;</div>
+                    <div class="command-arguments">
+                        <strong>Arguments:</strong>
+                        <ul>
+                            <li><code>user</code> — Mention the user.</li>
+                            <li><code>new_balance</code> — The new balance.</li>
+                        </ul>
+                    </div>
+                    <div class="command-examples">
+                        <strong>Examples:</strong>
+                        <ul>
+                            <li>
+                                <span class="example-title">Updating a user's balance:</span>
+                                <div class="example-content">
+                                Command: <code>!UpdateBalance @JohnDoe, 5000</code><br>
+                                Response: "The balance of @JohnDoe has been updated to 5000."
+                                </div>
+                            </li>
+                            <li>
+                                <span class="example-title">Invalid input format:</span>
+                                <div class="example-content">
+                                Command: <code>!UpdateBalance JohnDoe 5000</code><br>
+                                Response: "Invalid format. Please use the format: <code>!UpdateBalance @user, &lt;new_balance&gt;</code>"
+                                </div>
+                            </li>
+                            <li>
+                                <span class="example-title">Invalid user mention:</span>
+                                <div class="example-content">
+                                Command: <code>!UpdateBalance JohnDoe, 5000</code><br>
+                                Response: "Invalid user mention. Please mention a valid user."
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <h2 id="autoreactions" class="category-title">AutoReactions</h2>
+
+            <div class="category-overview">
+                <p>
+                    The AutoReaction System automatically adds emoji reactions to messages containing attachments. 
+                    It is particularly useful for meme or media channels where automatic reactions enhance engagement.
+                </p>
+                <h3>Main Flow:</h3>
+                <ol>
+                    <li>Admins set up a list of reactions using the <code>!SetReactionList</code> command.
+                        <ul>
+                            <li>If a channel is specified, reactions are assigned <strong>only</strong> to that channel (Sub-Reactions).</li>
+                            <li>If no channel is specified, reactions apply <strong>globally</strong> across the server (Main-Reactions).</li>
+                        </ul>
+                    </li>
+                    <li>Admins set the number of reactions to add using the <code>!SetReactionCount</code> command.
+                        <ul>
+                            <li>Example: If 6 reactions are set up and count is 3, the bot randomly picks 3.</li>
+                            <li>If 2 reactions are set up and count is 2, the bot adds both in the original order.</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="accordion-content">
+                
+                <div class="command">
+                    <div class="command-name">DisableReactions</div>
+                    <div class="command-description">
+                        Disables reactions for a specified channel. This prevents the bot from automatically adding reactions to messages in that channel.
+                    </div>
+                    <div class="command-usage">!DisableReactions &lt;channel&gt;</div>
+                    <div class="command-arguments">
+                        <strong>Arguments:</strong>
+                        <ul>
+                            <li><code>channel</code> — The channel where reactions should be disabled (mention as #channel).</li>
+                        </ul>
+                    </div>
+                    <div class="command-details">
+                        <strong>Permissions:</strong>
+                        <ul>
+                            <li>Only administrators can use this command.</li>
+                        </ul>
+                    </div>
+                    <div class="command-examples">
+                        <strong>Examples:</strong>
+                        <ul>
+                            <li>
+                                <span class="example-title">Disable reactions in #general:</span>
+                                <div class="example-content">
+                                    Command: <code>!DisableReactions #general</code><br>
+                                    Behavior: Adds the channel #general to the disabled list.
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="command">
+                    <div class="command-name">ListReactions</div>
+                    <div class="command-description">
+                        Shows the current emoji list and reaction count. Displays both main reactions (server-wide) and sub-reactions (channel-specific).
+                    </div>
+                    <div class="command-usage">!ListReactions</div>
+                    <div class="command-details">
+                        <strong>Permissions:</strong>
+                        <ul>
+                            <li>Only administrators can use this command.</li>
+                        </ul>
+                    </div>
+                    <div class="command-examples">
+                        <strong>Examples:</strong>
+                        <ul>
+                            <li>
+                                <span class="example-title">View all configured reactions:</span>
+                                <div class="example-content">
+                                    Command: <code>!ListReactions</code><br>
+                                    Behavior: Displays the list of emojis and counts configured for the server and specific channels.
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="command">
+                    <div class="command-name">SetReactionCount</div>
+                    <div class="command-description">
+                        Set the number of reactions to be added from the configured list.
+                    </div>
+                    <div class="command-usage">!SetReactionCount &lt;count&gt; [channel]</div>
+                    <div class="command-arguments">
+                        <strong>Arguments:</strong>
+                        <ul>
+                            <li><code>count</code> (int) — How many reactions should be added per message.</li>
+                            <li><code>channel</code> (optional) — The channel to assign this count to. If omitted, applies server-wide.</li>
+                        </ul>
+                    </div>
+                    <div class="command-details">
+                        <strong>Permissions:</strong>
+                        <ul>
+                            <li>Only administrators can use this command.</li>
+                        </ul>
+                    </div>
+                    <div class="command-examples">
+                        <strong>Examples:</strong>
+                        <ul>
+                            <li>
+                                <span class="example-title">Set global reaction count to 3:</span>
+                                <div class="example-content">
+                                    Command: <code>!SetReactionCount 3</code><br>
+                                    Behavior: Bot randomly picks 3 reactions from the main list for media across the server.
+                                </div>
+                            </li>
+                            <li>
+                                <span class="example-title">Set reaction count for #general to 2:</span>
+                                <div class="example-content">
+                                    Command: <code>!SetReactionCount 2 #general</code><br>
+                                    Behavior: Bot randomly picks 2 reactions from the list for media in #general.
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="command">
+                    <div class="command-name">SetReactionList</div>
+                    <div class="command-description">
+                        Set up the emoji list for the server or a specific channel.
+                    </div>
+                    <div class="command-usage">!SetReactionList &lt;emoji_count&gt; [channel]</div>
+                    <div class="command-arguments">
+                        <strong>Arguments:</strong>
+                        <ul>
+                            <li><code>emoji_count</code> (int) — The total number of emojis you want to set in the list.</li>
+                            <li><code>channel</code> (optional) — The channel to assign these emojis to. If omitted, applies server-wide.</li>
+                        </ul>
+                    </div>
+                    <div class="command-details">
+                        <strong>Permissions:</strong>
+                        <ul>
+                            <li>Only administrators can use this command.</li>
+                        </ul>
+                    </div>
+                    <div class="command-examples">
+                        <strong>Examples:</strong>
+                        <ul>
+                            <li>
+                                <span class="example-title">Set 5 emojis for the main server list:</span>
+                                <div class="example-content">
+                                    Command: <code>!SetReactionList 5</code><br>
+                                    Behavior: Bot will prompt you to enter 5 emojis to be used server-wide.
+                                </div>
+                            </li>
+                            <li>
+                                <span class="example-title">Set 4 emojis for #general:</span>
+                                <div class="example-content">
+                                    Command: <code>!SetReactionList 4 #general</code><br>
+                                    Behavior: Bot will prompt you to enter 4 emojis specifically for the #general channel.
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
+            <h2 id="moderation" class="category-title">Moderation</h2>
+            
+            <div class="category-overview">
+                <p>
+                    This bot offers advanced moderation tools to help you keep your server clean, safe, and free from unwanted links.
+                </p>
+                
+                <h3>Feature Highlights:</h3>
+                <ul>
+                    <li><strong>Clear Messages:</strong> Quickly bulk-delete messages to clean up chat history.</li>
+                    <li><strong>Link Moderation:</strong> Robust protection against unwanted domains.</li>
+                </ul>
+
+                <h3>Link Moderation Workflow:</h3>
+                <p>By default, this feature is disabled. Here is how to set it up:</p>
+                <ol>
+                    <li><strong>Enable & Configure:</strong> Use <code>!BlockLinks</code> to activate the feature. You can customize actions such as deleting links, timing out users (3 days), and/or logging violations.</li>
+                    <li><strong>Manage Domains:</strong> Add unwanted domains using <code>!BlockDomain</code> or remove them with <code>!UnblockDomain</code>.</li>
+                    <li><strong>Trusted Users:</strong> Use <code>!AddWhitelist</code> to allow specific members to bypass link restrictions.</li>
+                    <li><strong>Review Settings:</strong> Check your current configuration with <code>!ViewLinkModerationSettings</code>.</li>
+                </ol>
+            </div>
+
+            <div class="accordion-content">
+                <!-- AddWhitelist -->
+                <div class="command">
+                    <div class="command-name">AddWhitelist</div>
+                    <div class="command-description">
+                        Add a user to the whitelist. Whitelisted users can send links without being restricted by the bot's link monitoring system.
+                    </div>
+                    <div class="command-usage">!AddWhitelist &lt;user&gt;</div>
+                    <div class="command-arguments">
+                        <strong>Arguments:</strong>
+                        <ul>
+                            <li><code>user</code> — The user to add to the whitelist (mention).</li>
+                        </ul>
+                    </div>
+                    <div class="command-details">
+                        <strong>Permissions:</strong>
+                        <ul>
+                            <li>Only administrators can use this command.</li>
+                        </ul>
+                    </div>
+                    <div class="command-examples">
+                        <strong>Examples:</strong>
+                        <ul>
+                            <li>
+                                <span class="example-title">Allow a user to post links:</span>
+                                <div class="example-content">
+                                    Command: <code>!AddWhitelist @username</code>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- BlockDomain -->
+                <div class="command">
+                    <div class="command-name">BlockDomain</div>
+                    <div class="command-description">
+                        Block links from one or more domains from being used in your server.
+                    </div>
+                    <div class="command-usage">!BlockDomain &lt;domains&gt;</div>
+                    <div class="command-arguments">
+                        <strong>Arguments:</strong>
+                        <ul>
+                            <li><code>domains</code> — Comma-separated list of domains to block (e.g., discord.gg, spam.com).</li>
+                        </ul>
+                    </div>
+                    <div class="command-details">
+                        <strong>Permissions:</strong>
+                        <ul>
+                            <li>Only administrators can use this command.</li>
+                        </ul>
+                    </div>
+                    <div class="command-examples">
+                        <strong>Examples:</strong>
+                        <ul>
+                            <li>
+                                <span class="example-title">Block invite links and a spam site:</span>
+                                <div class="example-content">
+                                    Command: <code>!BlockDomain discord.gg, spam.com</code>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- BlockLinks -->
+                <div class="command">
+                    <div class="command-name">BlockLinks</div>
+                    <div class="command-description">
+                        Enable link monitoring and initiate the interactive configuration for moderation settings (Delete, Timeout, Log).
+                    </div>
+                    <div class="command-usage">!BlockLinks</div>
+                    <div class="command-details">
+                        <strong>Permissions:</strong>
+                        <ul>
+                            <li>Only administrators can use this command.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Clear -->
+                <div class="command">
+                    <div class="command-name">Clear</div>
+                    <div class="command-description">
+                        Quickly bulk-delete a specified number of messages in a channel.
+                    </div>
+                    <div class="command-usage">!Clear &lt;count&gt; [channel]</div>
+                    <div class="command-arguments">
+                        <strong>Arguments:</strong>
+                        <ul>
+                            <li><code>count</code> — The number of messages to delete.</li>
+                            <li><code>channel</code> (optional) — The channel to delete messages from. Defaults to current channel.</li>
+                        </ul>
+                    </div>
+                    <div class="command-details">
+                        <strong>Permissions:</strong>
+                        <ul>
+                            <li>Only administrators can use this command.</li>
+                        </ul>
+                    </div>
+                    <div class="command-examples">
+                        <strong>Examples:</strong>
+                        <ul>
+                            <li>
+                                <span class="example-title">Delete last 10 messages in current channel:</span>
+                                <div class="example-content">
+                                    Command: <code>!Clear 10</code>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="example-title">Delete last 5 messages in #general:</span>
+                                <div class="example-content">
+                                    Command: <code>!Clear 5 #general</code>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- ListBlockedDomains -->
+                <div class="command">
+                    <div class="command-name">ListBlockedDomains</div>
+                    <div class="command-description">List all currently blocked domains.</div>
+                    <div class="command-usage">!ListBlockedDomains</div>
+                    <div class="command-details">
+                        <strong>Permissions:</strong>
+                        <ul>
+                            <li>Only administrators can use this command.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- ListWhitelist -->
+                <div class="command">
+                    <div class="command-name">ListWhitelist</div>
+                    <div class="command-description">
+                        Display the list of whitelisted users.
+                    </div>
+                    <div class="command-usage">!ListWhitelist</div>
+                    <div class="command-details">
+                        <strong>Permissions:</strong>
+                        <ul>
+                            <li>Only administrators can use this command.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- RemoveWhitelist -->
+                <div class="command">
+                    <div class="command-name">RemoveWhitelist</div>
+                    <div class="command-description">
+                        Remove a user from the whitelist. They will be subject to link monitoring again.
+                    </div>
+                    <div class="command-usage">!RemoveWhitelist &lt;user&gt;</div>
+                    <div class="command-arguments">
+                        <strong>Arguments:</strong>
+                        <ul>
+                            <li><code>user</code> — The user to remove from the whitelist (mention).</li>
+                        </ul>
+                    </div>
+                    <div class="command-details">
+                        <strong>Permissions:</strong>
+                        <ul>
+                            <li>Only administrators can use this command.</li>
+                        </ul>
+                    </div>
+                    <div class="command-examples">
+                        <strong>Examples:</strong>
+                        <ul>
+                            <li>
+                                <span class="example-title">Revoke link permissions:</span>
+                                <div class="example-content">
+                                    Command: <code>!RemoveWhitelist @username</code>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- UnblockDomain -->
+                <div class="command">
+                    <div class="command-name">UnblockDomain</div>
+                    <div class="command-description">
+                        Unblock one or more domains to allow their links again.
+                    </div>
+                    <div class="command-usage">!UnblockDomain &lt;domains&gt;</div>
+                    <div class="command-arguments">
+                        <strong>Arguments:</strong>
+                        <ul>
+                            <li><code>domains</code> — Comma-separated list of domains to unblock.</li>
+                        </ul>
+                    </div>
+                    <div class="command-details">
+                        <strong>Permissions:</strong>
+                        <ul>
+                            <li>Only administrators can use this command.</li>
+                        </ul>
+                    </div>
+                    <div class="command-examples">
+                        <strong>Examples:</strong>
+                        <ul>
+                            <li>
+                                <span class="example-title">Allow specific domains:</span>
+                                <div class="example-content">
+                                    Command: <code>!UnblockDomain discord.gg, spam.com</code>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- UnblockLinks -->
+                <div class="command">
+                    <div class="command-name">UnblockLinks</div>
+                    <div class="command-description">
+                        Disable link monitoring completely. Links will no longer be moderated.
+                    </div>
+                    <div class="command-usage">!UnblockLinks</div>
+                    <div class="command-details">
+                        <strong>Permissions:</strong>
+                        <ul>
+                            <li>Only administrators can use this command.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- ViewLinkModerationSettings -->
+                <div class="command">
+                    <div class="command-name">ViewLinkModerationSettings</div>
+                    <div class="command-description">
+                        Displays current link moderation settings, including enabled actions (Block, Delete, Log, Timeout) and the blocked domains list.
+                    </div>
+                    <div class="command-usage">!ViewLinkModerationSettings</div>
+                    <div class="command-details">
+                        <strong>Permissions:</strong>
+                        <ul>
+                            <li>Only administrators can use this command.</li>
+                        </ul>
+                    </div>
+                    <div class="command-examples">
+                        <strong>Examples:</strong>
+                        <ul>
+                            <li>
+                                <span class="example-title">Check configuration:</span>
+                                <div class="example-content">
+                                    Command: <code>!ViewLinkModerationSettings</code><br>
+                                    Response:<br>
+                                    <pre>
+Link Moderation Settings:
+Block Links: Enabled
+Delete Links: Enabled
+Log Links: Enabled
+Timeout User: Enabled
+Blocked Domains: discord.gg, spam.com
+                                    </pre>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLASH COMMANDS -->
+
+            <h2 id="media_transfer" class="category-title">Media Transfer</h2>
+            <div class="accordion-content">
+                <div class="command">
+                    <div class="command-name">/forward_media</div>
+                    <div class="command-description">
+                        Forward media from one channel (source) to another channel (destination). 
+                        The source channel must be in the server where the command is used. 
+                        The destination channel can be in the same or a different server, provided the bot has permission to post there.
+                        It forwards media one by one at a paced rate to prevent rate limits.
+                    </div>
+                    <div class="command-usage">/forward_media &lt;source_channel&gt; &lt;destination_channel_id&gt; &lt;count&gt;</div>
+                    <div class="command-arguments">
+                        <strong>Arguments:</strong>
+                        <ul>
+                            <li><code>source_channel</code> — The channel from which media needs to be forwarded (must be in the current server).</li>
+                            <li><code>destination_channel_id</code> — The ID of the channel where media needs to be forwarded. (Right-click channel > Copy Channel ID).</li>
+                            <li><code>count</code> (optional) — The number of media items to forward (e.g., last 5 items).</li>
+                        </ul>
+                    </div>
+                    <div class="command-details">
+                        <strong>Permissions:</strong>
+                        <ul>
+                            <li>Only administrators can use this command.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <h2 id="analytics" class="category-title">Analytics</h2>
+            <div class="category-overview">
+                <p>
+                    As the name says, these commands can perform simple data analytics and provide a detailed table to the admin.
+                </p>
+            </div>
+            <div class="accordion-content">
+                <div class="command">
+                    <div class="command-name">/generate_multi_report</div>
+                    <div class="command-description">
+                        Allows the admin to look at user activity across various categories at once. 
+                        The bot analyzes each channel under the selected categories to determine: Total messages, Unique senders, Total reactions, Media counts, and Unique media posters.
+                    </div>
+                    <div class="command-usage">/generate_multi_report &lt;categories&gt; &lt;days&gt; &lt;min_age_days&gt; &lt;sort_by&gt;</div>
+                    <div class="command-arguments">
+                        <strong>Arguments:</strong>
+                        <ul>
+                            <li><code>categories</code> — Select between 2 to 10 categories to analyze.</li>
+                            <li><code>days</code> — How many days back to look for activity.</li>
+                            <li><code>min_age_days</code> (optional) — Exclude channels newer than this number of days.</li>
+                            <li><code>sort_by</code> — Sort the final report by a specific metric.</li>
+                        </ul>
+                    </div>
+                    <div class="command-details">
+                        <strong>Permissions:</strong>
+                        <ul>
+                            <li>Only administrators can use this command.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="command">
+                    <div class="command-name">/generate_report</div>
+                    <div class="command-description">
+                        Allows the admin to look at the user activity of a single channel or all channels under a single category.
+                        Tabulates details like Total messages, Unique senders, Total reactions, Media counts, and Unique media posters.
+                    </div>
+                    <div class="command-usage">/generate_report &lt;scope&gt; &lt;days&gt; &lt;min_age_days&gt; &lt;target_channel&gt; &lt;target_category&gt; &lt;sort_by&gt;</div>
+                    <div class="command-arguments">
+                        <strong>Arguments:</strong>
+                        <ul>
+                            <li><code>scope</code> — Choose to analyze a "channel" or a "category".</li>
+                            <li><code>days</code> — How many days back to look.</li>
+                            <li><code>min_age_days</code> (optional) — Exclude new channels (used if scope is "category").</li>
+                            <li><code>target_channel</code> — The specific channel to analyze (if scope is "channel").</li>
+                            <li><code>target_category</code> — The specific category to analyze (if scope is "category").</li>
+                            <li><code>sort_by</code> — Sort the category report (if scope is "category").</li>
+                        </ul>
+                    </div>
+                    <div class="command-details">
+                        <strong>Permissions:</strong>
+                        <ul>
+                            <li>Only administrators can use this command.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <h2 id="thread_manager" class="category-title">Thread Manager</h2>
+            <div class="accordion-content">
+                <div class="command">
+                    <div class="command-name">/privatethread</div>
+                    <div class="command-description">
+                        Creates a button labeled "create a thread". 
+                        This button allows any server member to create a private thread, typically used for server support discussions.
+                    </div>
+                    <div class="command-usage">/privatethread &lt;message&gt; &lt;mentions_target&gt;</div>
+                    <div class="command-arguments">
+                        <strong>Arguments:</strong>
+                        <ul>
+                            <li><code>message</code> — The message displayed above the button, describing its purpose.</li>
+                            <li><code>mentions_target</code> — A role or member to mention/notify when a user creates a private thread (e.g., Moderators).</li>
+                        </ul>
+                    </div>
+                    <div class="command-details">
+                        <strong>Permissions:</strong>
+                        <ul>
+                            <li>Only administrators can use this command.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <h2 id="reminders" class="category-title">Reminders</h2>
+            <div class="category-overview">
+                <p>
+                    This category has a suite of commands to setup reminders for different events like birthdays, anniversaries, or other occasions.
+                </p>
+                <h3>Main Flow:</h3>
+                <ol>
+                    <li>Use <code>/reminder add</code> to add someone's birthday or event.</li>
+                    <li>Use <code>/reminder remove</code> to remove existing events if needed.</li>
+                    <li>Use <code>/reminder setup</code> to configure the channel, time, and timezone for notifications.</li>
+                    <li>Use <code>/reminder setadvance</code> to optionally set an early reminder before the actual event day.</li>
+                </ol>
+            </div>
+            <div class="accordion-content">
+                <div class="command">
+                    <div class="command-name">/reminder add</div>
+                    <div class="command-description">Add a new reminder for a person or event.</div>
+                    <div class="command-usage">/reminder add &lt;name&gt; &lt;date&gt; &lt;category&gt;</div>
+                    <div class="command-arguments">
+                        <strong>Arguments:</strong>
+                        <ul>
+                            <li><code>name</code> — Name of the person or organization.</li>
+                            <li><code>date</code> — Date of the event.</li>
+                            <li><code>category</code> (optional) — Type/Category of the event.</li>
+                        </ul>
+                    </div>
+                    <div class="command-details">
+                        <strong>Permissions:</strong>
+                        <ul>
+                            <li>Only administrators can use this command.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="command">
+                    <div class="command-name">/reminder list</div>
+                    <div class="command-description">List all scheduled reminders.</div>
+                    <div class="command-usage">/reminder list &lt;group_by&gt; &lt;order&gt; &lt;category&gt;</div>
+                    <div class="command-arguments">
+                        <strong>Arguments:</strong>
+                        <ul>
+                            <li><code>group_by</code> (optional) — Group the list by name or by event month.</li>
+                            <li><code>order</code> (optional) — Sort order (ascending or descending).</li>
+                            <li><code>category</code> (optional) — Filter events by type.</li>
+                        </ul>
+                    </div>
+                    <div class="command-details">
+                        <strong>Permissions:</strong>
+                        <ul>
+                            <li>Only administrators can use this command.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="command">
+                    <div class="command-name">/reminder remove</div>
+                    <div class="command-description">Remove an existing event.</div>
+                    <div class="command-usage">/reminder remove &lt;name&gt;</div>
+                    <div class="command-arguments">
+                        <strong>Arguments:</strong>
+                        <ul>
+                            <li><code>name</code> — Name of the event to be removed.</li>
+                        </ul>
+                    </div>
+                    <div class="command-details">
+                        <strong>Permissions:</strong>
+                        <ul>
+                            <li>Only administrators can use this command.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="command">
+                    <div class="command-name">/reminder setadvance</div>
+                    <div class="command-description">
+                        Set how many days in advance the bot should send an early reminder. 
+                        This setting applies to all events in the server.
+                    </div>
+                    <div class="command-usage">/reminder setadvance &lt;days&gt;</div>
+                    <div class="command-arguments">
+                        <strong>Arguments:</strong>
+                        <ul>
+                            <li><code>days</code> — Number of days before the event to send a reminder.</li>
+                        </ul>
+                    </div>
+                    <div class="command-details">
+                        <strong>Permissions:</strong>
+                        <ul>
+                            <li>Only administrators can use this command.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="command">
+                    <div class="command-name">/reminder setup</div>
+                    <div class="command-description">
+                        Triggers a setup wizard (pop-ups) where users can configure:
+                        <ul>
+                            <li>The channel where reminders are sent.</li>
+                            <li>The time at which reminders are sent.</li>
+                            <li>The timezone used to determine the send time.</li>
+                        </ul>
+                    </div>
+                    <div class="command-usage">/reminder setup</div>
+                    <div class="command-details">
+                        <strong>Permissions:</strong>
+                        <ul>
+                            <li>Only administrators can use this command.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="command">
+                    <div class="command-name">/reminder setupstatus</div>
+                    <div class="command-description">Shows the current status of the reminder configuration.</div>
+                    <div class="command-usage">/reminder setupstatus</div>
+                    <div class="command-details">
+                        <strong>Permissions:</strong>
+                        <ul>
+                            <li>Only administrators can use this command.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <script>
+        // Accordion toggle on heading click
+        document.querySelectorAll('.category-title').forEach(title => {
+            title.addEventListener('click', () => {
+
+                searchInput.value = "";
+                commandBlocks.forEach(cmd => cmd.style.display = "block");
+                // find the next .accordion-content after category title, skipping other siblings like .category-overview
+                let content = title.nextElementSibling;
+                while(content && !content.classList.contains('accordion-content')){
+                    content = content.nextElementSibling;
+                }
+                if(content){
+
+                    // Close all other accordion contents
+                    document.querySelectorAll('.accordion-content').forEach(c => {
+                        if (c !== content) {
+                            c.classList.remove('show');
+                        }
+                    });
+
+                    // Toggle current
+                    content.classList.toggle('show');
+                }
+            });
+        });
+
+        // Sidebar link click -> scroll + expand main page content with auto-close
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                searchInput.value = "";
+                commandBlocks.forEach(cmd => cmd.style.display = "block");
+                document.querySelectorAll(".accordion-content").forEach(c => c.classList.remove("show"));
+                const targetId = link.getAttribute('href').substring(1);
+                const category = document.getElementById(targetId);
+
+                // Smooth scroll
+                category.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                // Find the correct .accordion-content after the category
+                let content = category.nextElementSibling;
+                while(content && !content.classList.contains('accordion-content')){
+                    content = content.nextElementSibling;
+                }
+
+                if(content){
+                    // Close all other categories first
+                    document.querySelectorAll('.accordion-content').forEach(c => {
+                        if (c !== content) {
+                            c.classList.remove('show');
+                        }
+                    });
+
+                    // Expand target category
+                    content.classList.add('show');
+                }
+            });
+        });
+
+        // --- Command Search in Sidebar ---
+        const searchInput = document.querySelector("#search");
+        const commandBlocks = document.querySelectorAll(".command");
+        const searchMessage = document.getElementById("search-message");
+
+        searchInput.addEventListener("input", () => {
+            const query = searchInput.value.toLowerCase().trim();
+            let visibleCount = 0; // count matching commands
+
+            commandBlocks.forEach(block => {
+                const name = block.querySelector(".command-name").textContent.toLowerCase();
+                const matches = name.includes(query);
+
+                // Show/hide the command block
+                block.style.display = matches ? "block" : "none";
+                if (matches) visibleCount++;
+            });
+
+            // Update the search message
+            if (query.length > 0) {
+                searchMessage.textContent = `Search active: ${visibleCount} result${visibleCount !== 1 ? "s" : ""}`;
+            } else {
+                searchMessage.textContent = "";
+            }
+            // Handle accordion-content visibility
+            document.querySelectorAll(".accordion-content").forEach(section => {
+                const commandsInside = section.querySelectorAll(".command");
+                let hasVisible = false;
+
+                commandsInside.forEach(cmd => {
+                    if (cmd.style.display !== "none") hasVisible = true;
+                });
+
+                // Expand only if matching commands exist
+                if (query.length > 0) {
+                    section.classList.toggle("show", hasVisible);
+                } else {
+                    // On empty query, return to default collapsed state
+                    section.classList.remove("show");
+                }
+            });
+        });
+
+        </script>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Anegan. All rights reserved.</p>
+    </footer>
+</body>
+</html>
